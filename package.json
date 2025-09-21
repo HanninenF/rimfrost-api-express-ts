@@ -1,0 +1,14 @@
+{
+  "name": "rimfrost-api-express-ts",
+  "version": "1.0.0",
+  "description": "A small, well-structured **Express + TypeScript** REST API for the **Rimfrost** domain using **Prisma ORM** and **MySQL**.  \r The project follows a **layer-first architecture** for clear separation of concerns:",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prisma": "^6.16.2"
+  }
+}
