@@ -19,7 +19,7 @@
 | Note | Datamodellen inkluderar relationer mellan personer och utgåvor samt specifika roller i både produktion och låtskrivande. |
 | Next | Fylla på med låtdata och testköra queries för att verifiera att relationerna fungerar korrekt.                           |
 
-## 2025-09-21
+## 2025-09-22
 
 | Type | Item                                                                                                 |
 | ---- | ---------------------------------------------------------------------------------------------------- |
@@ -28,3 +28,10 @@
 | Done | Registrerat låtskrivare och deras andelar (Fredrik, Sebastian, Jonas, Johan).                        |
 | Note | Delningsprocenten är balanserad mellan medlemmarna, med stöd för flera upphovsmän.                   |
 | Next | Koppla låtar till specifika releaser via track_list och testa queries för att validera integriteten. |
+
+## 2025-09-22
+
+| Type | Item                                                        |
+| ---- | ----------------------------------------------------------- |
+| Done | Populerat databasen med data                                |
+| Next | Refaktoriserat `rimfrost.sql` till separata migrationsfiler |
