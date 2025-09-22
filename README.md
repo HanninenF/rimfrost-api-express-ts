@@ -224,8 +224,3 @@ On `SIGINT`/`SIGTERM`:
 ## 📝 License
 
 MIT
-
-```
-
-Vill du att jag också uppdaterar API-exemplen med några av dina relationer (t.ex. `/records/:id/tracklist`, `/songs/:songId/writers`, `/records/:id/editions`)? Jag kan lägga in dem direkt under API-sektionen.
-```
