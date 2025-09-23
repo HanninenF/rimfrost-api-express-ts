@@ -2,17 +2,41 @@
   "name": "rimfrost-api-express-ts",
   "version": "1.0.0",
   "description": "A small, well-structured **Express + TypeScript** REST API for the **Rimfrost** domain using **Prisma ORM** and **MySQL**.  \r The project follows a **layer-first architecture** for clear separation of concerns:",
-  "main": "index.js",
+  "main": "dist/app.js",
   "scripts": {
+    "start": "node dist/app.js",
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "serve": "nodemon dist/app.js",
+    "dev": "npm-run-all --parallel build:watch serve",
     "db:setup": "node scripts/dbSetup.js",
     "db:reset": "node scripts/dbReset.js",
     "db:migrate": "node scripts/dbMigrate.js",
     "db:seed": "node scripts/dbSeed.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
+  "type": "module",
   "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.5.2",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "eslint": "^9.36.0",
+    "globals": "^16.4.0",
+    "jiti": "^2.6.0",
+    "nodemon": "^3.1.10",
+    "npm-run-all": "^4.1.5",
+    "prisma": "^6.16.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.1"
+  },
+  "dependencies": {
     "dotenv": "^17.2.2",
-    "prisma": "^6.16.2"
+    "express": "^5.1.0",
+    "mysql2": "^3.15.0"
   }
 }
