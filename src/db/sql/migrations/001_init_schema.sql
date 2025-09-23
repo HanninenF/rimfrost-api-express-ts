@@ -1,3 +1,4 @@
+SET NAMES utf8mb4;
 
 -- Create database
 CREATE DATABASE IF NOT EXISTS rimfrost_db
@@ -147,7 +148,7 @@ CREATE TABLE song_writer_role (
   UNIQUE (song_writer_id, role_id)
 );
 
---Create track_list (FK: record, song)
+-- Create track_list (FK: record, song)
 DROP TABLE IF EXISTS track_list;
 
 CREATE TABLE track_list (
@@ -186,3 +187,4 @@ CREATE TABLE edition (
   CHECK (catalog_number IS NULL OR catalog_number <> ''),
   CHECK (barcode_upc_ean IS NULL OR barcode_upc_ean <> '')
 );
+

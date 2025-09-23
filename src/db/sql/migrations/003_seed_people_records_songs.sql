@@ -1,5 +1,8 @@
 -- grunddata
 
+SET NAMES utf8mb4;
+-- (safe, idempotent)
+USE rimfrost_db;
 -- Insert persons
 INSERT INTO person (first_name, alias, last_name, ipi_number)
 VALUES 

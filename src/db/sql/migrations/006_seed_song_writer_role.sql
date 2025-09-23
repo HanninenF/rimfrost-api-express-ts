@@ -1,63 +1,37 @@
--- Insert song_writer_roles
-INSERT INTO song_writer_role (song_writer_id, role_id) VALUES
--- Hänninen
-(1,15),(1,16),
-(3,15),(3,16),
-(5,15),(5,16),
-(7,15),(7,16),
-(9,15),(9,16),
-(11,15),(11,16),
-(13,15),(13,16),
-(15,15),(15,16),
-(17,15),(17,16),
-(19,15),(19,16),
-(21,15),(21,16),
-(24,15),(24,16),
-(26,15),(26,16),
-(28,15),(28,16),
-(30,15),(30,16),
-(32,15),(32,16),
-(34,15),(34,16),
-(36,15),(36,16),
-(38,15),(38,16),
-(40,15),(40,16),
-(42,15),(42,16),
-(45,15),(45,16),
-(47,15),(47,16),
-(49,15),(49,16),
-(52,15),(52,16);
 
-INSERT INTO song_writer_role (song_writer_id, role_id) VALUES
--- Svedlund
-(2,15),(2,16),
-(4,15),(4,16),
-(6,15),(6,16),
-(8,15),(8,16),
-(10,15),(10,16),
-(12,15),(12,16),
-(14,15),(14,16),
-(16,15),(16,16),
-(18,15),(18,16),
-(20,15),(20,16),
-(22,15),(22,16),
-(25,15),(25,16),
-(27,15),(27,16),
-(29,15),(29,16),
-(31,15),(31,16),
-(33,15),(33,16),
-(35,15),(35,16),
-(37,15),(37,16),
-(39,15),(39,16),
-(41,15),(41,16),
-(43,15),(43,16),
-(46,15),(46,16),
-(48,15),(48,16),
-(50,15),(50,16),
-(53,15),(53,16);
+SET NAMES utf8mb4;
+-- (safe, idempotent)
+USE rimfrost_db;
 
-INSERT INTO song_writer_role (song_writer_id, role_id) VALUES
--- Lettenström
-(44,16),
-(51,16),
--- Påhlsson
-(23,15);
+-- Hänninen & Svedlund: båda rollerna
+INSERT INTO song_writer_role (song_writer_id, role_id)
+SELECT sw.id, r.id
+FROM song_writer sw
+JOIN person p ON p.id = sw.person_id
+JOIN role r ON r.role_title IN ('Music','Lyrics')
+LEFT JOIN song_writer_role srl
+  ON srl.song_writer_id = sw.id AND srl.role_id = r.id
+WHERE p.last_name IN ('Hänninen','Svedlund')
+  AND srl.id IS NULL;
+
+-- Lettenström: bara Lyrics
+INSERT INTO song_writer_role (song_writer_id, role_id)
+SELECT sw.id, r.id
+FROM song_writer sw
+JOIN person p ON p.id = sw.person_id
+JOIN role r ON r.role_title = 'Lyrics'
+LEFT JOIN song_writer_role srl
+  ON srl.song_writer_id = sw.id AND srl.role_id = r.id
+WHERE p.last_name = 'Lettenström'
+  AND srl.id IS NULL;
+
+-- Påhlsson: bara Music
+INSERT INTO song_writer_role (song_writer_id, role_id)
+SELECT sw.id, r.id
+FROM song_writer sw
+JOIN person p ON p.id = sw.person_id
+JOIN role r ON r.role_title = 'Music'
+LEFT JOIN song_writer_role srl
+  ON srl.song_writer_id = sw.id AND srl.role_id = r.id
+WHERE p.last_name = 'Påhlsson'
+  AND srl.id IS NULL;

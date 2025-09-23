@@ -1,4 +1,7 @@
--- Insert release_credits
+-- Insert release_credit
+SET NAMES utf8mb4;
+-- (safe, idempotent)
+USE rimfrost_db;
 INSERT INTO release_credit (person_id, release_id) VALUES
 /*person_id 1= Fredrik*/
 (1,1), /* Unredeemed Demons */

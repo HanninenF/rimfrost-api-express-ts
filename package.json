@@ -4,14 +4,15 @@
   "description": "A small, well-structured **Express + TypeScript** REST API for the **Rimfrost** domain using **Prisma ORM** and **MySQL**.  \r The project follows a **layer-first architecture** for clear separation of concerns:",
   "main": "index.js",
   "scripts": {
-    "db:reset": "mysql -u root -p rimfrost_db < db/migrations/001_init_schema.sql",
-    "db:migrate": "mysql -u root -p rimfrost_db < db/migrations/002_base_data_roles_formats.sql && mysql -u root -p rimfrost_db < db/migrations/003_seed_people_records_songs.sql",
-    "db:seed": "mysql -u root -p rimfrost_db < db/migrations/004_relations_release_credit.sql && mysql -u root -p rimfrost_db < db/migrations/005_relations_song_writer.sql && mysql -u root -p rimfrost_db < db/migrations/006_seed_track_list.sql && mysql -u root -p rimfrost_db < db/migrations/007_seed_editions.sql",
-    "db:setup": "npm run db:reset && npm run db:migrate && npm run db:seed"
+    "db:setup": "node scripts/dbSetup.js",
+    "db:reset": "node scripts/dbReset.js",
+    "db:migrate": "node scripts/dbMigrate.js",
+    "db:seed": "node scripts/dbSeed.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "dotenv": "^17.2.2",
     "prisma": "^6.16.2"
   }
 }

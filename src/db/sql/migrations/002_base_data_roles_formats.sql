@@ -1,5 +1,8 @@
 -- lexikon”/enum-liknande)
 
+SET NAMES utf8mb4;
+-- (safe, idempotent)
+USE rimfrost_db;
 -- insert roles
 INSERT INTO role (role_title, category) VALUES
 ('Vocals','Performance'),

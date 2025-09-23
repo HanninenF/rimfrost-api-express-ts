@@ -94,6 +94,9 @@ It isolates responsibilities (data → service → routes), makes testing easier
 
 - Node.js ≥ 18 LTS
 - MySQL 8 (or compatible server)
+  - Ensure the MySQL `bin` folder is added to your system `PATH`
+    - Windows example: `C:\Program Files\MySQL\MySQL Server 8.0\bin`
+    - macOS/Linux example (Homebrew): `/usr/local/mysql/bin`
 - Prisma CLI (installed via dev deps)
 
 ---
@@ -119,7 +122,7 @@ cp .env.example .env
 
 `.env.example`:
 
-```env
+```bash
 # App
 PORT=3000
 NODE_ENV=development
@@ -129,13 +132,25 @@ NODE_ENV=development
 DATABASE_URL=mysql://root:password@localhost:3306/rimfrostdb
 ```
 
-### 3) Database (Prisma)
+### 3) Database
+
+You have two options for initializing the database:
+
+#### Option A – Full setup (reset + migrate + seed)
 
 ```bash
-npm run prisma:generate
-npm run prisma:migrate
-# optional
-npm run prisma:studio
+npm run db:setup
+```
+
+This will reset the schema, apply all migrations, and run the seed script.
+⚠️ **Warning:** This clears all existing data in the database.
+
+#### Option B – Step by step
+
+```bash
+npm run prisma:generate   # Generate Prisma client
+npm run prisma:migrate    # Apply migrations
+npm run prisma:studio     # (optional) Open Prisma Studio
 ```
 
 ### 4) Run in development

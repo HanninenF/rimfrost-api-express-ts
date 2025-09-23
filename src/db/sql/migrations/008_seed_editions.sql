@@ -1,3 +1,6 @@
+SET NAMES utf8mb4;
+-- (safe, idempotent)
+USE rimfrost_db;
 -- Insert editions
 INSERT INTO edition (release_id, format_id, edition_name, catalog_number, barcode_upc_ean, edition_date) VALUES
 /*
