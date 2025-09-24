@@ -1,5 +1,7 @@
 import * as personData from "../data/persons.data.js";
+import { PersonNotFoundError } from "../errors/PersonNotFoundError.js";
 import type { PersonDTO, Person } from "../types/person.types.js";
+
 const toDTO = (p: Person): PersonDTO => {
   return {
     id: p.id,
@@ -29,7 +31,7 @@ export const getPersonById = async (id: number): Promise<PersonDTO | null> => {
   const row: Person | null = await personData.findById(id);
 
   if (!row) {
-    return null;
+    throw new PersonNotFoundError(id);
   }
   return toDTO(row);
 };
