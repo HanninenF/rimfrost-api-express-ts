@@ -1,4 +1,5 @@
 import express from "express";
+import asyncHandler from "../utils/asyncHandler.js";
 
 import * as personService from "../services/persons.service.js";
 import type { PersonDTO } from "../types/person.types.js";
@@ -7,7 +8,14 @@ const router = express.Router();
 
 // GET /api/persons - Alla personer
 
-router.get("/", async (req, res) => {
+router.get(
+  "/",
+  asyncHandler(async (req, res) => {
+    const persons: PersonDTO[] = await personService.getAllPersons();
+    res.json(persons);
+  })
+);
+/* router.get("/", async (req, res) => {
   try {
     const persons: PersonDTO[] = await personService.getAllPersons();
     res.json(persons);
@@ -26,7 +34,7 @@ router.get("/", async (req, res) => {
       });
     }
   }
-});
+}); */
 
 router.get("/:id", async (req, res) => {
   try {
