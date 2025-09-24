@@ -1,3 +1,7 @@
+/* // DEPRECATED: Denna fil ersätts av Prisma (se prismaClient.ts).
+// Behålls tills vidare som referens till gamla mysql2-lösningen.
+
+
 import mysql from "mysql2/promise";
 import type { Connection } from "mysql2/promise";
 import { env } from "../config/env.js";
@@ -16,3 +20,4 @@ export const getConnection = async (): Promise<Connection> => {
   }
   return connection;
 };
+ */

@@ -53,3 +53,5 @@ Thumbs.db
 ._*
 $RECYCLE.BIN/
 inst.md
+tabort.json
+/src/generated/prisma

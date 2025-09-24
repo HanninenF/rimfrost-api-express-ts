@@ -1,26 +1,32 @@
 import * as personData from "../data/persons.data.js";
-import type { PersonDTO, PersonRow } from "../types/person.types.js";
-const toDTO = (p: PersonRow): PersonDTO => {
+import type { PersonDTO, Person } from "../types/person.types.js";
+const toDTO = (p: Person): PersonDTO => {
   return {
     id: p.id,
     first_name: p.first_name,
     alias: p.alias ? p.alias : null,
     last_name: p.last_name,
     ipi_number: p.ipi_number ? p.ipi_number : null,
-    created_at: p.created_at,
-    updated_at: p.updated_at,
+    created_at:
+      p.created_at instanceof Date
+        ? p.created_at.toISOString()
+        : (p.created_at as unknown as string),
+    updated_at:
+      p.updated_at instanceof Date
+        ? p.updated_at.toISOString()
+        : (p.updated_at as unknown as string),
   };
 };
 
 // Business logic och data transformation
 export const getAllPersons = async (): Promise<PersonDTO[]> => {
-  const rows: PersonRow[] = await personData.findAll();
+  const rows: Person[] = await personData.findAll();
 
   return rows.map(toDTO);
 };
 
-export const getPersonById = async (id: string): Promise<PersonDTO | null> => {
-  const row: PersonRow | null = await personData.findById(id);
+export const getPersonById = async (id: number): Promise<PersonDTO | null> => {
+  const row: Person | null = await personData.findById(id);
 
   if (!row) {
     return null;

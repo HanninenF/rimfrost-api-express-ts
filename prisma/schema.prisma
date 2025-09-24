@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model edition {
+  id              Int           @id @default(autoincrement())
+  release_id      Int
+  format_id       Int
+  edition_name    String        @db.VarChar(20)
+  catalog_number  String?       @db.VarChar(30)
+  barcode_upc_ean String?       @unique(map: "barcode_upc_ean") @db.VarChar(20)
+  edition_date    DateTime?     @db.Date
+  created_at      DateTime      @default(now()) @db.Timestamp(0)
+  updated_at      DateTime      @default(now()) @db.Timestamp(0)
+  record          record        @relation(fields: [release_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "edition_ibfk_1")
+  record_format   record_format @relation(fields: [format_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "edition_ibfk_2")
+
+  @@unique([release_id, format_id, catalog_number], map: "release_id")
+  @@index([format_id], map: "format_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model person {
+  id             Int              @id @default(autoincrement())
+  first_name     String           @db.VarChar(50)
+  alias          String?          @db.VarChar(50)
+  last_name      String           @db.VarChar(50)
+  ipi_number     String?          @unique(map: "uq_ipi_number") @db.VarChar(20)
+  created_at     DateTime         @default(now()) @db.Timestamp(0)
+  updated_at     DateTime         @default(now()) @db.Timestamp(0)
+  release_credit release_credit[]
+  song_writer    song_writer[]
+
+  @@index([last_name, first_name], map: "idx_person_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model record {
+  id             Int              @id @default(autoincrement())
+  title          String           @db.VarChar(50)
+  release_date   DateTime         @db.Date
+  created_at     DateTime         @default(now()) @db.Timestamp(0)
+  updated_at     DateTime         @default(now()) @db.Timestamp(0)
+  edition        edition[]
+  release_credit release_credit[]
+  track_list     track_list[]
+
+  @@index([title, release_date], map: "idx_record_title_release_date")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model record_format {
+  id          Int                    @id @default(autoincrement())
+  format_type String                 @unique(map: "format_type") @db.VarChar(20)
+  category    record_format_category
+  created_at  DateTime               @default(now()) @db.Timestamp(0)
+  updated_at  DateTime               @default(now()) @db.Timestamp(0)
+  edition     edition[]
+}
+
+model release_credit {
+  id                  Int                   @id @default(autoincrement())
+  person_id           Int
+  release_id          Int
+  created_at          DateTime              @default(now()) @db.Timestamp(0)
+  updated_at          DateTime              @default(now()) @db.Timestamp(0)
+  person              person                @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "release_credit_ibfk_1")
+  record              record                @relation(fields: [release_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "release_credit_ibfk_2")
+  release_credit_role release_credit_role[]
+
+  @@unique([person_id, release_id], map: "person_id")
+  @@index([release_id], map: "release_id")
+}
+
+model release_credit_role {
+  id                Int            @id @default(autoincrement())
+  release_credit_id Int
+  role_id           Int
+  created_at        DateTime       @default(now()) @db.Timestamp(0)
+  updated_at        DateTime       @default(now()) @db.Timestamp(0)
+  release_credit    release_credit @relation(fields: [release_credit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "release_credit_role_ibfk_1")
+  role              role           @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "release_credit_role_ibfk_2")
+
+  @@unique([release_credit_id, role_id], map: "release_credit_id")
+  @@index([role_id], map: "role_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model role {
+  id                  Int                   @id @default(autoincrement())
+  role_title          String                @unique(map: "uq_role_title") @db.VarChar(30)
+  category            role_category
+  created_at          DateTime              @default(now()) @db.Timestamp(0)
+  updated_at          DateTime              @default(now()) @db.Timestamp(0)
+  release_credit_role release_credit_role[]
+  song_writer_role    song_writer_role[]
+
+  @@index([role_title], map: "idx_role_title")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model song {
+  id          Int           @id @default(autoincrement())
+  title       String        @db.VarChar(50)
+  duration    Int
+  isrc        String?       @unique(map: "isrc") @db.VarChar(12)
+  created_at  DateTime      @default(now()) @db.Timestamp(0)
+  updated_at  DateTime      @default(now()) @db.Timestamp(0)
+  song_writer song_writer[]
+  track_list  track_list[]
+
+  @@index([title], map: "idx_song_title")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model song_writer {
+  id               Int                @id @default(autoincrement())
+  person_id        Int
+  song_id          Int
+  share_percent    Decimal?           @db.Decimal(5, 2)
+  created_at       DateTime           @default(now()) @db.Timestamp(0)
+  updated_at       DateTime           @default(now()) @db.Timestamp(0)
+  person           person             @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "song_writer_ibfk_1")
+  song             song               @relation(fields: [song_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "song_writer_ibfk_2")
+  song_writer_role song_writer_role[]
+
+  @@unique([person_id, song_id], map: "person_id")
+  @@index([song_id], map: "song_id")
+}
+
+model song_writer_role {
+  id             Int         @id @default(autoincrement())
+  song_writer_id Int
+  role_id        Int
+  created_at     DateTime    @default(now()) @db.Timestamp(0)
+  updated_at     DateTime    @default(now()) @db.Timestamp(0)
+  song_writer    song_writer @relation(fields: [song_writer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "song_writer_role_ibfk_1")
+  role           role        @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "song_writer_role_ibfk_2")
+
+  @@unique([song_writer_id, role_id], map: "song_writer_id")
+  @@index([role_id], map: "role_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model track_list {
+  id           Int      @id @default(autoincrement())
+  song_id      Int
+  release_id   Int
+  track_number Int
+  created_at   DateTime @default(now()) @db.Timestamp(0)
+  updated_at   DateTime @default(now()) @db.Timestamp(0)
+  song         song     @relation(fields: [song_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "track_list_ibfk_1")
+  record       record   @relation(fields: [release_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "track_list_ibfk_2")
+
+  @@unique([release_id, track_number], map: "release_id")
+  @@unique([release_id, song_id], map: "release_id_2")
+  @@index([song_id], map: "song_id")
+}
+
+enum role_category {
+  Performance
+  Production
+  Songwriting
+}
+
+enum record_format_category {
+  Physical
+  Special_Edition @map("Special Edition")
+  Digital
+}

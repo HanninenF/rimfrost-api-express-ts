@@ -33,3 +33,8 @@ export type PersonDTO = {
   created_at: string;
   updated_at: string;
 };
+
+/* Prisma types */
+import type { Prisma } from "../generated/prisma/index.js";
+
+export type Person = Prisma.personGetPayload<true>;

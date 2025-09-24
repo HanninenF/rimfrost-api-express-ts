@@ -31,7 +31,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const person = await personService.getPersonById(id);
+    const person = await personService.getPersonById(parseInt(id, 10));
 
     if (!person) {
       return res.status(404).json({ error: "Person not found" });
