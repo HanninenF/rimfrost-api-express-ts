@@ -5,3 +5,9 @@ import type { Record } from "../types/record.types.js";
 export const findAll = async (): Promise<Record[]> => {
   return await prisma.record.findMany();
 };
+
+export const findById = async (id: number): Promise<Record | null> => {
+  return await prisma.record.findUnique({
+    where: { id },
+  });
+};

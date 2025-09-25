@@ -7,7 +7,7 @@ const app = express();
 const PORT: string | number = process.env.PORT || 3000;
 
 app.use("/api/persons", personRouter);
-app.use("api/records", recordRouter);
+app.use("/api/records", recordRouter);
 
 app.use(errorHandler);
 app.listen(PORT, () => {

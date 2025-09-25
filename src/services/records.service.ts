@@ -1,5 +1,6 @@
 import type { RecordDTO, Record } from "../types/record.types.js";
 import * as recordData from "../data/records.data.js";
+import { RecordNotFoundError } from "../errors/NotFoundErrors.js";
 const toDTO = (r: Record): RecordDTO => {
   return {
     id: r.id,
@@ -23,4 +24,13 @@ const toDTO = (r: Record): RecordDTO => {
 export const getAllRecords = async (): Promise<RecordDTO[]> => {
   const rows: Record[] = await recordData.findAll();
   return rows.map(toDTO);
+};
+
+export const getRecordById = async (id: number): Promise<RecordDTO | null> => {
+  const row: Record | null = await recordData.findById(id);
+
+  if (!row) {
+    throw new RecordNotFoundError(id);
+  }
+  return toDTO(row);
 };

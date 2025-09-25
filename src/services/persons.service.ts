@@ -1,5 +1,5 @@
 import * as personData from "../data/persons.data.js";
-import { PersonNotFoundError } from "../errors/PersonNotFoundError.js";
+import { PersonNotFoundError } from "../errors/NotFoundErrors.js";
 import type { PersonDTO, Person } from "../types/person.types.js";
 
 const toDTO = (p: Person): PersonDTO => {

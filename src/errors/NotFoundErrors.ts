@@ -5,3 +5,9 @@ export class PersonNotFoundError extends DomainError {
     super(`Person with id ${id} not found`);
   }
 }
+
+export class RecordNotFoundError extends DomainError {
+  constructor(public id: number) {
+    super(`Record with id ${id} not found`);
+  }
+}

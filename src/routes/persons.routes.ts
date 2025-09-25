@@ -4,8 +4,9 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import * as personService from "../services/persons.service.js";
 import type { PersonDTO } from "../types/person.types.js";
 
-import { HttpError } from "../utils/HttpError.js";
-import { PersonNotFoundError } from "../errors/PersonNotFoundError.js";
+import { PersonNotFoundError } from "../errors/NotFoundErrors.js";
+import idParam from "../middleware/idParam.js";
+import makeGetById from "../utils/makeGetById.js";
 
 const router = express.Router();
 
@@ -18,44 +19,20 @@ router.get(
     res.json(persons);
   })
 );
-/* router.get("/", async (req, res) => {
-  try {
-    const persons: PersonDTO[] = await personService.getAllPersons();
-    res.json(persons);
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error("Error fetching persons: ", err.message);
-      res.status(500).json({
-        err: "Failed to fetch persons",
-        details: err.message,
-      });
-    } else {
-      console.error("Unknown error: ", err);
-      res.status(500).json({
-        err: "Failed to fetch persons",
-        details: "Unknown error",
-      });
-    }
-  }
-}); */
 
+router.param("id", idParam);
+
+// GET /api/persons/:id
 router.get(
   "/:id",
-  asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    if (!id) {
-      throw new HttpError(400, "Missing person id", "MISSING_ID");
-    }
-    try {
-      const person = await personService.getPersonById(parseInt(id, 10));
-      res.json(person);
-    } catch (err) {
-      if (err instanceof PersonNotFoundError) {
-        throw new HttpError(404, err.message, "PERSON_NOT_FOUND");
-      }
-      throw err;
-    }
-  })
+  asyncHandler(
+    makeGetById(
+      personService.getPersonById,
+      PersonNotFoundError,
+      "PERSON_NOT_FOUND",
+      "Person"
+    )
+  )
 );
 
 export default router;
