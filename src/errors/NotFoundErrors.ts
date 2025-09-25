@@ -11,3 +11,9 @@ export class RecordNotFoundError extends DomainError {
     super(`Record with id ${id} not found`);
   }
 }
+
+export class SongNotFoundError extends DomainError {
+  constructor(public id: number) {
+    super(`Song with id ${id} not found`);
+  }
+}

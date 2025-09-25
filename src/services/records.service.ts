@@ -1,6 +1,7 @@
 import type { RecordDTO, Record } from "../types/record.types.js";
 import * as recordData from "../data/records.data.js";
 import { RecordNotFoundError } from "../errors/NotFoundErrors.js";
+
 const toDTO = (r: Record): RecordDTO => {
   return {
     id: r.id,
