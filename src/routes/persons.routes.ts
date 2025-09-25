@@ -1,12 +1,8 @@
-import express from "express";
-import { asyncHandler } from "../utils/asyncHandler.js";
-
 import * as personService from "../services/persons.service.js";
 import type { PersonDTO } from "../types/person.types.js";
 
 import { PersonNotFoundError } from "../errors/NotFoundErrors.js";
-import idParam from "../middleware/idParam.js";
-import makeGetById from "../utils/makeGetById.js";
+import { asyncHandler, express, makeGetById } from "./common.js";
 
 const router = express.Router();
 
@@ -19,8 +15,6 @@ router.get(
     res.json(persons);
   })
 );
-
-router.param("id", idParam);
 
 // GET /api/persons/:id
 router.get(

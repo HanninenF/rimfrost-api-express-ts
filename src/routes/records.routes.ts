@@ -1,9 +1,7 @@
-import express from "express";
+import { express, asyncHandler, makeGetById } from "./common.js";
+
 import type { RecordDTO } from "../types/record.types.js";
 import * as recordService from "../services/records.service.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
-import idParam from "../middleware/idParam.js";
-import makeGetById from "../utils/makeGetById.js";
 import { RecordNotFoundError } from "../errors/NotFoundErrors.js";
 
 const router = express.Router();
@@ -17,8 +15,6 @@ router.get(
     res.json(records);
   })
 );
-
-router.param("id", idParam);
 
 // GET /api/records/:id
 router.get(

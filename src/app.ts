@@ -1,11 +1,11 @@
-import express from "express";
 import personRouter from "./routes/persons.routes.js";
 import recordRouter from "./routes/records.routes.js";
+import { errorHandler, express, idParam } from "./routes/common.js";
 
-import errorHandler from "./middleware/errorHandler.js";
 const app = express();
 const PORT: string | number = process.env.PORT || 3000;
 
+app.param("id", idParam);
 app.use("/api/persons", personRouter);
 app.use("/api/records", recordRouter);
 
