@@ -10,6 +10,7 @@ app.use("/api/persons", personRouter);
 app.use("/api/records", recordRouter);
 
 app.use(errorHandler);
+
 app.listen(PORT, () => {
   console.log(`Servern körs på ${PORT}`);
 });

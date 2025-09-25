@@ -6,9 +6,12 @@ export default function idParam(
   req: Request,
   res: Response,
   next: NextFunction,
-  rawId: string
+  rawId: string,
+  _name?: string
 ): void {
   const id = Number.parseInt(rawId, 10);
+  // Logga för felsökning
+  console.log("[idParam] rawId=", rawId, "→", id);
 
   if (!Number.isFinite(id)) {
     throw new HttpError(400, "Invalid id", "INVALID_ID");

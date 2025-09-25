@@ -14,7 +14,16 @@ export default function makeGetById<T, E extends Error>(
   resourceName: string
 ): AsyncRequestHandler {
   return async (req, res) => {
-    const id = res.locals.id;
+    const rawId =
+      typeof res.locals.id === "number"
+        ? String(res.locals.id)
+        : req.params.id ?? "";
+
+    const id = Number.parseInt(rawId.trim(), 10);
+    if (!Number.isFinite(id)) {
+      throw new HttpError(400, "Invalid id", "INVALID_ID");
+    }
+
     try {
       const data = await getById(id);
 
