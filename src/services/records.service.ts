@@ -1,11 +1,14 @@
-import type { RecordDTO, Record } from "../types/record.types.js";
+import type {
+  RecordDTO,
+  RecordModel as RecordModel,
+} from "../types/record.types.js";
 import * as recordData from "../data/records.data.js";
 import {
   PersonNotFoundError,
   RecordNotFoundError,
 } from "../errors/NotFoundErrors.js";
 
-const toDTO = (r: Record): RecordDTO => {
+const toDTO = (r: RecordModel): RecordDTO => {
   return {
     id: r.id,
     title: r.title,
@@ -26,12 +29,12 @@ const toDTO = (r: Record): RecordDTO => {
 
 // Business logic och data transformation
 export const getAllRecords = async (): Promise<RecordDTO[]> => {
-  const rows: Record[] = await recordData.findAll();
+  const rows: RecordModel[] = await recordData.findAll();
   return rows.map(toDTO);
 };
 
 export const getRecordById = async (id: number): Promise<RecordDTO | null> => {
-  const row: Record | null = await recordData.findById(id);
+  const row: RecordModel | null = await recordData.findById(id);
 
   if (!row) {
     throw new RecordNotFoundError(id);

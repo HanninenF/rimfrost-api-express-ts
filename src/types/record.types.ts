@@ -7,6 +7,16 @@ export type NewRecord = {
 /** Payload vid uppdatering (PATCH) */
 export type UpdateRecord = Partial<NewRecord>;
 
+export type RoleCategory = "Performance" | "Production" | "Songwriting";
+
+export type RoleDTO = {
+  id: number;
+  role_title: string;
+  category: RoleCategory;
+  created_at: string;
+  updated_at: string;
+};
+
 /** Det vi skickar ut från API:t (service lägger till ...) */
 export type RecordDTO = {
   id: number;
@@ -14,10 +24,12 @@ export type RecordDTO = {
   release_date: string;
   created_at: string;
   updated_at: string;
+  role?: RoleDTO[];
 };
 
 /* Prisma types */
 
+// typer – type-only import är ok
 import type { Prisma } from "../generated/prisma/index.js";
 
-export type Record = Prisma.recordGetPayload<true>;
+export type RecordModel = Prisma.recordGetPayload<true>;

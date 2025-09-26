@@ -1,6 +1,9 @@
 // persons.service.ts
+import prisma from "../db/prismaClient.js";
 import { PersonNotFoundError } from "../errors/NotFoundErrors.js";
 import {
+  includeCredits,
+  includeCreditsAndRoles,
   type Person,
   type PersonDTO,
   type PersonWithCredits,
@@ -8,29 +11,11 @@ import {
 } from "../types/person.types.js";
 import * as personData from "../data/persons.data.js";
 import { toDTO } from "./persons.service.Deprecated.js";
-import prisma from "../db/prismaClient.js";
 
 type Options = {
   withRecords?: boolean;
   withRecordRoles?: boolean;
 };
-
-// Validera include-objektet så att felstavningar fångas av kompilatorn
-// ----- include-objekt som värden (ingen Prisma.validator behövs)
-const includeCredits = {
-  release_credit: { include: { record: true } },
-} as const;
-
-const includeCreditsAndRoles = {
-  release_credit: {
-    include: {
-      record: true,
-      // OBS: använd EXAKT relationsnamnet från din schema-modell:
-      // release_credit_role är join-relationen
-      release_credit_role: { include: { role: true } },
-    },
-  },
-} as const;
 
 // Business logic och data transformation
 export const getAllPersons = async (): Promise<PersonDTO[]> => {

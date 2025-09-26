@@ -28,7 +28,7 @@ router.get(
       });
     }
 
-    // with=records,roles
+    // with=records,recordRoles
     const withParam = String(req.query.with ?? "");
     const withSet = new Set(
       withParam
@@ -38,7 +38,7 @@ router.get(
     );
 
     // validera tillåtna värden
-    const allowed = new Set(["records", "roles"]);
+    const allowed = new Set(["records", "recordRoles"]);
     for (const w of withSet) {
       if (!allowed.has(w)) {
         return res.status(400).json({
@@ -51,9 +51,20 @@ router.get(
       }
     }
 
+    // recordRoles kräver records
+    if (withSet.has("recordRoles") && !withSet.has("records")) {
+      return res.status(400).json({
+        err: "Request Error",
+        code: "INVALID_WITH",
+        details: "`with=recordRoles` requires `with=records`",
+        status: 400,
+        route: `${req.method} ${req.originalUrl}`,
+      });
+    }
+
     const person = await personService.getPerson(id, {
       withRecords: withSet.has("records"),
-      withRoles: withSet.has("roles"),
+      withRecordRoles: withSet.has("recordRoles"),
     });
 
     res.json(person);

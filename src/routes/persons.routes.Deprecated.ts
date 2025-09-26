@@ -1,4 +1,4 @@
-import * as personService from "../services/persons.service.js";
+import * as personService from "../services/persons.service.Deprecated.js";
 import * as recordService from "../services/records.service.js";
 import type { PersonDTO } from "../types/person.types.js";
 

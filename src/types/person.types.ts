@@ -34,23 +34,25 @@ export type PersonDTO = {
   created_at: string;
   updated_at: string;
   records?: RecordDTO[];
-  roles?: string[];
 };
 
 /* Prisma types */
 import type { Prisma } from "../generated/prisma/index.js";
 
-export type Person = Prisma.personGetPayload<true>;
-
 export type PersonWithCredits = Prisma.personGetPayload<{
+  include: { release_credit: { include: { record: true } } };
+}>;
+
+export type PersonWithCreditsAndRoles = Prisma.personGetPayload<{
   include: {
     release_credit: {
       include: {
-        record: true; // eller select: { id: true, title: true, release_date: true }
+        record: true;
+        release_credit_role: { include: { role: true } };
       };
     };
   };
 }>;
 
-export type ReleaseCreditWithRecord =
-  PersonWithCredits["release_credit"][number];
+// types/person.types.ts
+export type Person = Prisma.personGetPayload<true>;
