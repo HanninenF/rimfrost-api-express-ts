@@ -1,23 +1,18 @@
-import * as personData from "../data/persons.data.js";
+// persons.service.ts
+import prisma from "../db/prismaClient.js";
 import { PersonNotFoundError } from "../errors/NotFoundErrors.js";
-import type { PersonDTO, Person } from "../types/person.types.js";
+import type {
+  Person,
+  PersonDTO,
+  PersonWithCredits,
+  ReleaseCreditWithRecord,
+} from "../types/person.types.js";
+import * as personData from "../data/persons.data.js";
+import { toDTO } from "./persons.service.Deprecated.js";
 
-const toDTO = (p: Person): PersonDTO => {
-  return {
-    id: p.id,
-    first_name: p.first_name,
-    alias: p.alias ? p.alias : null,
-    last_name: p.last_name,
-    ipi_number: p.ipi_number ? p.ipi_number : null,
-    created_at:
-      p.created_at instanceof Date
-        ? p.created_at.toISOString()
-        : (p.created_at as unknown as string),
-    updated_at:
-      p.updated_at instanceof Date
-        ? p.updated_at.toISOString()
-        : (p.updated_at as unknown as string),
-  };
+type Options = {
+  withRecords?: boolean;
+  withRoles?: boolean;
 };
 
 // Business logic och data transformation
@@ -27,18 +22,57 @@ export const getAllPersons = async (): Promise<PersonDTO[]> => {
   return rows.map(toDTO);
 };
 
-export const getPersonById = async (id: number): Promise<PersonDTO | null> => {
-  const row: Person | null = await personData.findById(id);
+export async function getPerson(
+  id: number,
+  opts: Options = {}
+): Promise<PersonDTO> {
+  const needCredits = !!(opts.withRecords || opts.withRoles);
 
-  if (!row) {
-    throw new PersonNotFoundError(id);
+  const person = await prisma.person.findUnique({
+    where: { id },
+    include: needCredits
+      ? {
+          // gå via join-tabellen
+          release_credit: {
+            include: {
+              // inkludera record bara om records efterfrågas
+              record: !!opts.withRecords,
+            },
+          },
+        }
+      : undefined,
+  });
+
+  if (!person) throw new PersonNotFoundError(id);
+
+  // Bas-DTO
+  const dto: PersonDTO = {
+    id: person.id,
+    first_name: person.first_name,
+    alias: person.alias,
+    last_name: person.last_name,
+    ipi_number: person.ipi_number,
+    created_at:
+      person.created_at instanceof Date
+        ? person.created_at.toISOString()
+        : (person.created_at as unknown as string),
+    updated_at:
+      person.updated_at instanceof Date
+        ? person.updated_at.toISOString()
+        : (person.updated_at as unknown as string),
+  };
+
+  if (opts.withRecords) {
+    const credits =
+      person.release_credit as PersonWithCredits["release_credit"];
+    dto.records = credits.map((rc: ReleaseCreditWithRecord) => ({
+      id: rc.record.id,
+      title: rc.record.title,
+      release_date: rc.record.release_date.toISOString(),
+      created_at: rc.record.created_at.toISOString(),
+      updated_at: rc.record.updated_at.toISOString(),
+    }));
   }
-  return toDTO(row);
-};
 
-//servera person och alla kopplade skivor
-export const getPersonWithRecords = async (id: number): Promise<PersonDTO> => {
-  const row = await personData.findByIdWithRecords(id);
-  if (!row) throw new PersonNotFoundError(id);
-  return toDTO(row);
-};
+  return dto as PersonDTO;
+}

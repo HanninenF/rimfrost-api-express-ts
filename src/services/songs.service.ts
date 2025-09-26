@@ -9,13 +9,9 @@ const toDTO = (s: Song): SongDTO => {
     duration: s.duration,
     isrc: s.isrc ? s.isrc : null,
     created_at:
-      s.created_at instanceof Date
-        ? s.created_at.toISOString()
-        : (s.created_at as unknown as string),
+      s.created_at instanceof Date ? s.created_at.toISOString() : s.created_at,
     updated_at:
-      s.updated_at instanceof Date
-        ? s.updated_at.toISOString()
-        : (s.updated_at as unknown as string),
+      s.updated_at instanceof Date ? s.updated_at.toISOString() : s.updated_at,
   };
 };
 

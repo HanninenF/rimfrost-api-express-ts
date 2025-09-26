@@ -1,10 +1,6 @@
-import * as personService from "../services/persons.service.js";
-import * as recordService from "../services/records.service.js";
+import { asyncHandler, express } from "./common.js";
 import type { PersonDTO } from "../types/person.types.js";
-
-import { PersonNotFoundError } from "../errors/NotFoundErrors.js";
-import { asyncHandler, express, makeGetById } from "./common.js";
-import makeGetByForeignId from "../utils/makeGetByForeignId.js";
+import * as personService from "../services/persons.service.js";
 
 const router = express.Router();
 
@@ -18,44 +14,50 @@ router.get(
   })
 );
 
-// GET /api/persons/:id
+// persons.routes.ts
 router.get(
   "/:id",
-  asyncHandler(
-    makeGetById(
-      personService.getPersonById,
-      PersonNotFoundError,
-      "PERSON_NOT_FOUND",
-      "Person"
-    )
-  )
-);
+  asyncHandler(async (req, res) => {
+    const id = Number.parseInt(req.params.id ?? "", 10);
+    if (!Number.isFinite(id)) {
+      return res.status(400).json({
+        err: "Request Error",
+        code: "INVALID_ID",
+        status: 400,
+        route: `${req.method} ${req.originalUrl}`,
+      });
+    }
 
-// GET /api/persons/:id/records - alla skivor kopplade till personen
+    // with=records,roles
+    const withParam = String(req.query.with ?? "");
+    const withSet = new Set(
+      withParam
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    );
 
-router.get(
-  "/:id/records",
-  asyncHandler(
-    makeGetByForeignId(recordService.getRecordsByPersonId, {
-      NotFoundError: PersonNotFoundError,
-      notFoundCode: "PERSON_NOT_FOUND",
-      ownerName: "Person",
-    })
-  )
-);
+    // validera tillåtna värden
+    const allowed = new Set(["records", "roles"]);
+    for (const w of withSet) {
+      if (!allowed.has(w)) {
+        return res.status(400).json({
+          err: "Request Error",
+          code: "INVALID_WITH",
+          details: `Unknown include '${w}'`,
+          status: 400,
+          route: `${req.method} ${req.originalUrl}`,
+        });
+      }
+    }
 
-// GET /api/persons/:id/with?records - En specifik person och alla skivor kopplade till personen
+    const person = await personService.getPerson(id, {
+      withRecords: withSet.has("records"),
+      withRoles: withSet.has("roles"),
+    });
 
-router.get(
-  "/:id/with?records",
-  asyncHandler(
-    makeGetById(
-      personService.getPersonWithRecords,
-      PersonNotFoundError,
-      "PERSON_NOT_FOUND",
-      "Person"
-    )
-  )
+    res.json(person);
+  })
 );
 
 export default router;
