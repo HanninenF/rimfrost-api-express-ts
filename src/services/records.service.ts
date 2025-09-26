@@ -1,6 +1,9 @@
 import type { RecordDTO, Record } from "../types/record.types.js";
 import * as recordData from "../data/records.data.js";
-import { RecordNotFoundError } from "../errors/NotFoundErrors.js";
+import {
+  PersonNotFoundError,
+  RecordNotFoundError,
+} from "../errors/NotFoundErrors.js";
 
 const toDTO = (r: Record): RecordDTO => {
   return {
@@ -34,4 +37,15 @@ export const getRecordById = async (id: number): Promise<RecordDTO | null> => {
     throw new RecordNotFoundError(id);
   }
   return toDTO(row);
+};
+
+// servera alla skivor för en viss person
+export const getRecordsByPersonId = async (
+  personId: number
+): Promise<RecordDTO[]> => {
+  const rows = await recordData.findByPersonId(personId);
+  if (!rows) {
+    throw new PersonNotFoundError(personId);
+  }
+  return rows.map(toDTO);
 };

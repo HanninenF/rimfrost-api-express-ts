@@ -11,3 +11,19 @@ export const findById = async (id: number): Promise<Person | null> => {
     where: { id },
   });
 };
+
+//Hämta person och alla kopplade skivor
+export const findByIdWithRecords = async (
+  id: number
+): Promise<Person | null> => {
+  return await prisma.person.findUnique({
+    where: { id },
+    include: {
+      release_credit: {
+        include: {
+          record: true,
+        },
+      },
+    },
+  });
+};

@@ -55,3 +55,17 @@
 | Done | Förbättrat error handler: returnerar endast säkra fält (`err, code, route, status`) till klienten     |
 | Note | Error handling är nu både centraliserad (DRY) och säker (inga känsliga detaljer läcker till klienten) |
 | Next | Skriva `records.routes`, `records.service` och se till att de fungerar med errorhantering             |
+
+## 2025-09-26
+
+| Type | Item                                                                                                                                                                                                     |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Done | Rensat gammal deprekerad MySQL-logik efter bytet till Prisma                                                                                                                                             |
+| Done | Lagt till `idParam`-middleware för centraliserad validering/parsing av `:id`                                                                                                                             |
+| Done | Uppdaterat `persons.routes` att använda `idParam`, `PersonNotFoundError` och `makeGetById`                                                                                                               |
+| Done | Justerat användningen av `asyncHandler` (fortsatt DRY, modulärt)                                                                                                                                         |
+| Done | Centraliserat imports och global `idParam`-registrering (`routes/common.ts`, routers uppdaterade, global `:id` i `app.ts`)                                                                               |
+| Fix  | `makeGetById` fallback till `req.params.id` om `res.locals.id` saknas (förhindrar PrismaClientValidationError)                                                                                           |
+| Feat | `songs.routes.ts` (lista alla låtar + hämta låt via id), `songs.service.ts` (mappar Prisma-resultat till `SongDTO`), `songs.data.ts` (DB-access), `SongNotFoundError`, `song.types.ts`                   |
+| Note | Routes och services är nu mer modulära och återanvänder gemensamma helpers                                                                                                                               |
+| Next | Lista ut hur jag ska implementera hämtning av flera kopplade tabeller och hur det ska hanteras i lager (route, service) samt hur JSON-svar kan struktureras med arrayer och objekt baserat på relationer |

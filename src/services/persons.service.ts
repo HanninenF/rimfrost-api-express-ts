@@ -35,3 +35,10 @@ export const getPersonById = async (id: number): Promise<PersonDTO | null> => {
   }
   return toDTO(row);
 };
+
+//servera person och alla kopplade skivor
+export const getPersonWithRecords = async (id: number): Promise<PersonDTO> => {
+  const row = await personData.findByIdWithRecords(id);
+  if (!row) throw new PersonNotFoundError(id);
+  return toDTO(row);
+};

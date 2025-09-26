@@ -1,12 +1,19 @@
- { "id": 1, 
- "title": "Unredeemed Demons", 
- "release_date": "2005-01-01" },
-  { "id": 2, 
-  "title": "A Frozen World Unknown", 
-  "release_date": "2006-01-01" },
-  { "id": 3, 
-  "title": "Veraldar Nagli", 
-  "release_date": "2009-01-01" },
-  { "id": 4, 
-  "title": "Rimfrost", 
-  "release_date": "2016-03-01" }
+{
+  "id": 1,
+  "first_name": "Fredrik",
+  "alias": "Throllv",
+  "last_name": "Hänninen",
+  "ipi_number": "595171915",
+  "records": [
+    { "id": 1, "title": "Unredeemed Demons", "release_date": "2005-01-01" },
+    {
+      "id": 2,
+      "title": "A Frozen World Unknown",
+      "release_date": "2006-01-01"
+    },
+    { "id": 3, "title": "Veraldar Nagli", "release_date": "2009-01-01" },
+    { "id": 4, "title": "Rimfrost", "release_date": "2016-03-01" }
+  ],
+  "created_at": "2025-09-23T14:41:50.000Z",
+  "updated_at": "2025-09-23T14:41:50.000Z"
+}

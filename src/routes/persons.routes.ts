@@ -1,8 +1,10 @@
 import * as personService from "../services/persons.service.js";
+import * as recordService from "../services/records.service.js";
 import type { PersonDTO } from "../types/person.types.js";
 
 import { PersonNotFoundError } from "../errors/NotFoundErrors.js";
 import { asyncHandler, express, makeGetById } from "./common.js";
+import makeGetByForeignId from "../utils/makeGetByForeignId.js";
 
 const router = express.Router();
 
@@ -22,6 +24,33 @@ router.get(
   asyncHandler(
     makeGetById(
       personService.getPersonById,
+      PersonNotFoundError,
+      "PERSON_NOT_FOUND",
+      "Person"
+    )
+  )
+);
+
+// GET /api/persons/:id/records - alla skivor kopplade till personen
+
+router.get(
+  "/:id/records",
+  asyncHandler(
+    makeGetByForeignId(recordService.getRecordsByPersonId, {
+      NotFoundError: PersonNotFoundError,
+      notFoundCode: "PERSON_NOT_FOUND",
+      ownerName: "Person",
+    })
+  )
+);
+
+// GET /api/persons/:id/with?records - En specifik person och alla skivor kopplade till personen
+
+router.get(
+  "/:id/with?records",
+  asyncHandler(
+    makeGetById(
+      personService.getPersonWithRecords,
       PersonNotFoundError,
       "PERSON_NOT_FOUND",
       "Person"
