@@ -24,6 +24,14 @@ export type NewPerson = {
 /** Payload vid uppdatering (PATCH) */
 export type UpdatePerson = Partial<NewPerson>;
 
+export type PersonMetaDTO = {
+  years_active: number;
+  recordCount: number;
+  roleCount: number;
+  mainRoles?: RoleDTO[] | null;
+  mainRolesCount?: number | null;
+};
+
 /** Det vi skickar ut från API:t (service lägger till ...) */
 export type PersonDTO = {
   id: number;
@@ -31,13 +39,14 @@ export type PersonDTO = {
   alias: string | null;
   last_name: string;
   ipi_number: string | null;
-  created_at: string;
-  updated_at: string;
+
   records?: RecordDTO[];
+  meta?: PersonMetaDTO;
 };
 
 /* Prisma types */
 import type { Prisma } from "../generated/prisma/index.js";
+import type { RoleDTO } from "./role.types.js";
 
 export type PersonWithCredits = Prisma.personGetPayload<{
   include: { release_credit: { include: { record: true } } };

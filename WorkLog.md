@@ -69,3 +69,18 @@
 | Feat | `songs.routes.ts` (lista alla låtar + hämta låt via id), `songs.service.ts` (mappar Prisma-resultat till `SongDTO`), `songs.data.ts` (DB-access), `SongNotFoundError`, `song.types.ts`                   |
 | Note | Routes och services är nu mer modulära och återanvänder gemensamma helpers                                                                                                                               |
 | Next | Lista ut hur jag ska implementera hämtning av flera kopplade tabeller och hur det ska hanteras i lager (route, service) samt hur JSON-svar kan struktureras med arrayer och objekt baserat på relationer |
+
+## 2025-09-27
+
+| Type | Item                                                                                                                                                                    |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Done | Lagt till `findByPersonId` för att hämta alla skivor som tillhör en person                                                                                              |
+| Done | Stöd i `GET /api/persons/:id` för `?with=records` och `?with=recordRoles`                                                                                               |
+| Done | Stöd i `GET /api/persons` för `?with=records`                                                                                                                           |
+| Done | Service inkluderar `release_credit → { record, release_credit_role → role }` och mappar till `PersonDTO.records[]` med `role[]`                                         |
+| Done | Infört starka typer: `PersonWithCredits`, `ReleaseCreditWithRecord`                                                                                                     |
+| Done | Validerat/whitelistat `with`; mappat `PersonNotFoundError` → `HttpError(404,"PERSON_NOT_FOUND")`                                                                        |
+| Done | Fixat relation-filters till `snake_case` (t.ex. `person_id`)                                                                                                            |
+| Fix  | Korrigerat felaktiga rollmappningar i `release_credit_role` (säkrat unikhet på `(release_credit_id, role_id)`, rensat och återinsatt korrekt)                           |
+| Note | Person-API stöder nu hämtning av records och roller per record; datakvalitet för roller är rättad                                                                       |
+| Next | Utöka svar med metadata: antal skivor, antal roller, `mainRole`, `collaborators`, `roleCategories` för `GET /api/persons/:id?with=recordRoles` (ev. även list-endpoint) |

@@ -14,7 +14,7 @@ INSERT INTO release_credit (person_id, release_id) VALUES
 (2,3), /* Veraldar Nagli */
 (2,4), /* Rimfrost    */
 /*person_id 5= Lettenström*/
-(5,4),
+(5,4),  
 /*person_id 6= Mikael*/
 (6,4),
 /*person_id 7= Kjellgren*/

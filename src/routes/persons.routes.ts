@@ -14,7 +14,7 @@ router.get(
   })
 );
 
-// persons.routes.ts
+// GET /api/persons/:id
 router.get(
   "/:id",
   asyncHandler(async (req, res) => {
@@ -38,7 +38,7 @@ router.get(
     );
 
     // validera tillåtna värden
-    const allowed = new Set(["records", "recordRoles"]);
+    const allowed = new Set(["records", "recordRoles", "meta"]);
     for (const w of withSet) {
       if (!allowed.has(w)) {
         return res.status(400).json({
@@ -62,9 +62,31 @@ router.get(
       });
     }
 
+    //  // meta kräver records
+    if (withSet.has("meta") && !withSet.has("records")) {
+      return res.status(400).json({
+        err: "Request Error",
+        code: "INVALID_WITH",
+        details: "`with=meta` requires `with=records`",
+        status: 400,
+        route: `${req.method} ${req.originalUrl}`,
+      });
+    }
+    // (om din meta använder roller: lägg även in detta)
+    if (withSet.has("meta") && !withSet.has("recordRoles")) {
+      return res.status(400).json({
+        err: "Request Error",
+        code: "INVALID_WITH",
+        details: "`with=meta` requires `with=recordRoles`",
+        status: 400,
+        route: `${req.method} ${req.originalUrl}`,
+      });
+    }
+
     const person = await personService.getPerson(id, {
       withRecords: withSet.has("records"),
       withRecordRoles: withSet.has("recordRoles"),
+      withRecordRolesMeta: withSet.has("meta"),
     });
 
     res.json(person);
