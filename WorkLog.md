@@ -84,3 +84,12 @@
 | Fix  | Korrigerat felaktiga rollmappningar i `release_credit_role` (säkrat unikhet på `(release_credit_id, role_id)`, rensat och återinsatt korrekt)                           |
 | Note | Person-API stöder nu hämtning av records och roller per record; datakvalitet för roller är rättad                                                                       |
 | Next | Utöka svar med metadata: antal skivor, antal roller, `mainRole`, `collaborators`, `roleCategories` för `GET /api/persons/:id?with=recordRoles` (ev. även list-endpoint) |
+
+## 2025-09-29
+
+| Type | Item                                                                                                               |
+| ---- | ------------------------------------------------------------------------------------------------------------------ |
+| Done | Brutit ut meta- och collaborator-logik från `persons.service` till ny `services/meta`-mapp                         |
+| Done | Skapat `buildPersonMeta`, `augmentRecordsWithCollaborators`, `attachRecordCollaborators` och utils för beräkningar |
+| Done | Förenklat `getPerson` genom att delegera meta och collaborators till de nya services                               |
+| Next | Fortsätta bryta ut kod för att göra den mer DRY, med separation of concerns och bättre läsbarhet                   |
