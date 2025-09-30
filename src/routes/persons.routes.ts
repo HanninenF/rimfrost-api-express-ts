@@ -28,17 +28,18 @@ router.get(
       });
     }
 
-    // with=records,recordRoles
+    // with=records,recordroles
     const withParam = String(req.query.with ?? "");
     const withSet = new Set(
       withParam
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean)
+        .map((s) => s.toLowerCase())
     );
 
     // validera tillåtna värden
-    const allowed = new Set(["records", "recordRoles", "meta"]);
+    const allowed = new Set(["records", "recordroles", "meta"]);
     for (const w of withSet) {
       if (!allowed.has(w)) {
         return res.status(400).json({
@@ -51,12 +52,12 @@ router.get(
       }
     }
 
-    // recordRoles kräver records
-    if (withSet.has("recordRoles") && !withSet.has("records")) {
+    // recordroles kräver records
+    if (withSet.has("recordroles") && !withSet.has("records")) {
       return res.status(400).json({
         err: "Request Error",
         code: "INVALID_WITH",
-        details: "`with=recordRoles` requires `with=records`",
+        details: "`with=recordroles` requires `with=records`",
         status: 400,
         route: `${req.method} ${req.originalUrl}`,
       });
@@ -73,11 +74,11 @@ router.get(
       });
     }
     // (om din meta använder roller: lägg även in detta)
-    if (withSet.has("meta") && !withSet.has("recordRoles")) {
+    if (withSet.has("meta") && !withSet.has("recordroles")) {
       return res.status(400).json({
         err: "Request Error",
         code: "INVALID_WITH",
-        details: "`with=meta` requires `with=recordRoles`",
+        details: "`with=meta` requires `with=recordroles`",
         status: 400,
         route: `${req.method} ${req.originalUrl}`,
       });
@@ -85,7 +86,7 @@ router.get(
 
     const person = await personService.getPerson(id, {
       withRecords: withSet.has("records"),
-      withRecordRoles: withSet.has("recordRoles"),
+      withRecordRoles: withSet.has("recordroles"),
       withRecordRolesMeta: withSet.has("meta"),
     });
 
