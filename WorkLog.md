@@ -93,3 +93,12 @@
 | Done | Skapat `buildPersonMeta`, `augmentRecordsWithCollaborators`, `attachRecordCollaborators` och utils för beräkningar |
 | Done | Förenklat `getPerson` genom att delegera meta och collaborators till de nya services                               |
 | Next | Fortsätta bryta ut kod för att göra den mer DRY, med separation of concerns och bättre läsbarhet                   |
+
+## 2025-10-03
+
+| Type | Item                                                                                                                                          |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Done | Gjort `with`-parametern case-insensitive i `/api/persons/:id`                                                                                 |
+| Done | Lagt till graceful shutdown med hård timeout (SIGINT/SIGTERM, unhandledRejection, uncaughtException, stänger servern och disconnectar Prisma) |
+| Done | Brutit ut error-hantering från routes till en middleware `errorHandler`                                                                       |
+| Next |                                                                                                                                               |

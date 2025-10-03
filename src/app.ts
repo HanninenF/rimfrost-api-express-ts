@@ -3,10 +3,12 @@ import recordRouter from "./routes/records.routes.js";
 import songRouter from "./routes/songs.routes.js";
 import { errorHandler, express, idParam } from "./routes/common.js";
 import prisma from "./db/prismaClient.js";
+import cors from "cors";
 
 const app = express();
 const PORT: number = Number(process.env.PORT) || 3000;
 
+app.use(cors({ origin: "http://localhost:4200" }));
 app.param("id", idParam);
 app.use("/api/persons", personRouter);
 app.use("/api/records", recordRouter);

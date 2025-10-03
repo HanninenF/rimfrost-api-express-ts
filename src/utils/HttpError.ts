@@ -1,12 +1,11 @@
-//error class HTTP-specifikt fel (endast i transportlagret)
 export class HttpError extends Error {
   constructor(
     public status: number,
-    message: string,
-    public code?: string,
-    public route?: string
+    public code: string,
+    public messageForClient: string = "Request Error",
+    public details?: string
   ) {
-    super(message);
+    super(`${code}: ${messageForClient}${details ? ` - ${details}` : ""}`);
     this.name = "HttpError";
   }
 }

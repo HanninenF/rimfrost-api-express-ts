@@ -27,3 +27,4 @@ export function buildPersonMeta(person: PersonDTO): PersonMetaDTO {
     mainRolesCount: mainRoles.length,
   };
 }
+

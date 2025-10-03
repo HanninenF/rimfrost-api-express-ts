@@ -1,6 +1,7 @@
 import { asyncHandler, express } from "./common.js";
 import type { PersonDTO } from "../types/person.types.js";
 import * as personService from "../services/persons.service.js";
+import { InvalidIdError, InvalidWithError } from "../errors/RequestErrors.js";
 
 const router = express.Router();
 
@@ -20,12 +21,13 @@ router.get(
   asyncHandler(async (req, res) => {
     const id = Number.parseInt(req.params.id ?? "", 10);
     if (!Number.isFinite(id)) {
-      return res.status(400).json({
+      throw new InvalidIdError();
+      /*  return res.status(400).json({
         err: "Request Error",
         code: "INVALID_ID",
         status: 400,
         route: `${req.method} ${req.originalUrl}`,
-      });
+      }); */
     }
 
     // with=records,recordroles
@@ -42,46 +44,22 @@ router.get(
     const allowed = new Set(["records", "recordroles", "meta"]);
     for (const w of withSet) {
       if (!allowed.has(w)) {
-        return res.status(400).json({
-          err: "Request Error",
-          code: "INVALID_WITH",
-          details: `Unknown include '${w}'`,
-          status: 400,
-          route: `${req.method} ${req.originalUrl}`,
-        });
+        throw new InvalidWithError(`Unknown include '${w}'`);
       }
     }
 
     // recordroles kräver records
     if (withSet.has("recordroles") && !withSet.has("records")) {
-      return res.status(400).json({
-        err: "Request Error",
-        code: "INVALID_WITH",
-        details: "`with=recordroles` requires `with=records`",
-        status: 400,
-        route: `${req.method} ${req.originalUrl}`,
-      });
+      throw new InvalidWithError("`with=recordroles` requires `with=records`");
     }
 
     //  // meta kräver records
     if (withSet.has("meta") && !withSet.has("records")) {
-      return res.status(400).json({
-        err: "Request Error",
-        code: "INVALID_WITH",
-        details: "`with=meta` requires `with=records`",
-        status: 400,
-        route: `${req.method} ${req.originalUrl}`,
-      });
+      throw new InvalidWithError("`with=meta` requires `with=records`");
     }
     // (om din meta använder roller: lägg även in detta)
     if (withSet.has("meta") && !withSet.has("recordroles")) {
-      return res.status(400).json({
-        err: "Request Error",
-        code: "INVALID_WITH",
-        details: "`with=meta` requires `with=recordroles`",
-        status: 400,
-        route: `${req.method} ${req.originalUrl}`,
-      });
+      throw new InvalidWithError("`with=meta` requires `with=recordroles`");
     }
 
     const person = await personService.getPerson(id, {
