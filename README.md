@@ -14,7 +14,7 @@ Domain focus: **person** — including related records, recordroles, and aggrega
 
 ---
 
-## 🧱 Tech Stack
+## 🪄 Tech Stack
 
 - **Runtime:** Node.js, Express
 - **Language:** TypeScript (ES2020, ESM)
@@ -90,7 +90,7 @@ rimfrost-api-express-ts/
 
 ---
 
-## 🧪 API – Persons
+## 📥 API – Persons
 
 ### Base
 
@@ -187,7 +187,7 @@ The server starts at [http://localhost:3000](http://localhost:3000) (unless `POR
 
 ---
 
-## 🧰 Notes on Tooling
+## Notes on Tooling
 
 - **ESLint (flat config):** Keeps the code style consistent and enforces explicit return types (type-aware linting for TS).
 - **.gitignore:** Keeps the repo clean (`dist/`, `node_modules/`, logs, `.env`), while committing `.env.example` for onboarding.
