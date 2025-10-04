@@ -1,4 +1,4 @@
-import { express, asyncHandler, makeGetById } from "./common.js";
+/* import { express, asyncHandler, makeGetById } from "./common.js";
 
 import type { RecordDTO } from "../types/record.types.js";
 import * as recordService from "../services/records.service.js";
@@ -29,4 +29,4 @@ router.get(
   )
 );
 
-export default router;
+export default router; */

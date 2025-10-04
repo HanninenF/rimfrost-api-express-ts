@@ -1,4 +1,4 @@
-import { HttpError } from "./HttpError.js";
+/* import { HttpError } from "./HttpError.js";
 import type { AsyncRequestHandler } from "./asyncHandler.js";
 
 // Konstruktortyp: tar id:number (ev. fler argument senare)
@@ -49,3 +49,4 @@ export default function makeGetById<T, E extends Error>(
     }
   };
 }
+ */

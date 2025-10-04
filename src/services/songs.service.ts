@@ -1,4 +1,4 @@
-import type { Song, SongDTO } from "../types/song.types.js";
+/* import type { Song, SongDTO } from "../types/song.types.js";
 import * as songData from "../data/songs.data.js";
 import { SongNotFoundError } from "../errors/NotFoundErrors.js";
 
@@ -30,3 +30,4 @@ export const getSongById = async (id: number): Promise<SongDTO | null> => {
   }
   return toDTO(row);
 };
+ */

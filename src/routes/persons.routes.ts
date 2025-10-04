@@ -22,12 +22,6 @@ router.get(
     const id = Number.parseInt(req.params.id ?? "", 10);
     if (!Number.isFinite(id)) {
       throw new InvalidIdError();
-      /*  return res.status(400).json({
-        err: "Request Error",
-        code: "INVALID_ID",
-        status: 400,
-        route: `${req.method} ${req.originalUrl}`,
-      }); */
     }
 
     // with=records,recordroles

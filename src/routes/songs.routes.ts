@@ -1,4 +1,4 @@
-import type { SongDTO } from "../types/song.types.js";
+/* import type { SongDTO } from "../types/song.types.js";
 import { asyncHandler, express, makeGetById } from "./common.js";
 
 import * as songService from "../services/songs.service.js";
@@ -28,4 +28,4 @@ router.get(
   )
 );
 
-export default router;
+export default router; */

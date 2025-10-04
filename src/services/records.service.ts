@@ -1,4 +1,4 @@
-import type {
+/* import type {
   RecordDTO,
   RecordModel as RecordModel,
 } from "../types/record.types.js";
@@ -51,4 +51,4 @@ export const getRecordsByPersonId = async (
     throw new PersonNotFoundError(personId);
   }
   return rows.map(toDTO);
-};
+}; */

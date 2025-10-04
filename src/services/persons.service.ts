@@ -13,24 +13,6 @@ type Options = {
   withRecordRolesMeta?: boolean;
 };
 
-/* // Validera include-objektet så att felstavningar fångas av kompilatorn
-// ----- include-objekt som värden (ingen Prisma.validator behövs)
-const includeCredits = {
-  release_credit: { include: { record: true } },
-} as const;
-
-const includeCreditsAndRoles = {
-  release_credit: {
-    include: {
-      record: true,
-      // OBS: använd EXAKT relationsnamnet från din schema-modell:
-      // release_credit_role är join-relationen
-      release_credit_role: { include: { role: true } },
-    },
-  },
-} as const; */
-
-// Business logic och data transformation
 export const getAllPersons = async (): Promise<PersonDTO[]> => {
   const rows: Person[] = await personData.findAll();
 

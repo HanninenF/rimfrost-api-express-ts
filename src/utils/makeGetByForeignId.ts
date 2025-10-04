@@ -1,4 +1,4 @@
-// utils/makeGetByForeignId.ts
+/* // utils/makeGetByForeignId.ts
 import type { AsyncRequestHandler } from "./asyncHandler.js";
 import { HttpError } from "./HttpError.js";
 
@@ -7,7 +7,7 @@ type ErrorConstructor<E extends Error> = abstract new (
   id: number,
   ...rest: unknown[]
 ) => E;
-
+ */
 /**
  * Bygger en handler för "GET /:id/<resource>" som returnerar en lista (T[]).
  * Ex: /api/persons/:id/records → alla records för personen.
@@ -15,7 +15,7 @@ type ErrorConstructor<E extends Error> = abstract new (
  * - Validerar och parsar id (locals → params).
  * - Returnerar alltid array (även tom).
  * - Översätter ev. domänfel till 404 om NotFoundError anges.
- */
+ 
 export default function makeGetByForeignId<T, E extends Error>(
   getByForeignId: (id: number) => Promise<T[]>,
   options?: {
@@ -57,3 +57,4 @@ export default function makeGetByForeignId<T, E extends Error>(
     }
   };
 }
+*/

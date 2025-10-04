@@ -1,8 +1,7 @@
-// src/types/monsters.types.ts
-import type { RowDataPacket } from "mysql2";
+/* import type { RowDataPacket } from "mysql2";*/
 
 import type { RecordDTO } from "./record.types.js";
-/** Rådata från databasen (SELECT) */
+/* Rådata från databasen (SELECT) 
 export type PersonRow = RowDataPacket & {
   id: number;
   first_name: string;
@@ -11,7 +10,7 @@ export type PersonRow = RowDataPacket & {
   ipi_number: string | null;
   created_at: string;
   updated_at: string;
-};
+}; */
 
 /** Payload vid skapande (POST) */
 export type NewPerson = {
