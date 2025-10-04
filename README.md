@@ -1,27 +1,16 @@
 # rimfrost-api-express-ts
 
-A small, well-structured **Express + TypeScript** REST API for the **Rimfrost** domain using **Prisma ORM** and **MySQL**.  
-The project follows a **layer-first architecture** for clear separation of concerns:
+A small, well-structured **Express + TypeScript** REST API for the **Rimfrost** domain using **Prisma ORM** and **MySQL**.
+The project follows a **layer-first architecture** to clearly separate responsibilities:
 
-- **db** (Prisma client / connection)
-- **data** (DAO/Repository – raw DB access)
-- **services** (domain logic, DTOs, mapping)
-- **routes** (HTTP/API – validation, status codes)
-- **middleware** (404/error)
-- **config** (env/app settings)
+- **db** – Prisma client / database connection
+- **data** – DAO/Repository (raw DB access via Prisma)
+- **services** – domain logic, DTO mapping, aggregation/meta
+- **routes** – HTTP/API (validation, status codes, calls to services)
+- **middleware** – e.g. `idParam`
+- **config** – environment and app configuration
 
-Domain entities: **person**, **record**, **song**, **format**, **role**.
-
----
-
-## 🚀 Features
-
-- TypeScript with ESM (NodeNext)
-- Prisma ORM (MySQL)
-- Environment-based configuration via dotenv (`.env` / `.env.example`)
-- Fast dev loop (TypeScript watch + nodemon)
-- Centralized error handling and 404 middleware
-- Clean separation of data/service/route layers (layer-first)
+Domain focus: **person** — including related records, recordroles, and aggregated metadata via the `with` query parameter.
 
 ---
 
@@ -32,61 +21,99 @@ Domain entities: **person**, **record**, **song**, **format**, **role**.
 - **ORM/DB:** Prisma + MySQL
 - **Tooling:** nodemon, npm-run-all, dotenv, ESLint (flat config)
 
-> ℹ️ ESLint (flat config) enforces explicit returns and consistent style, and a project `.gitignore` keeps the repo clean (`dist/`, `node_modules/`, logs, `.env`). Both are included in the repo.
+> ℹ️ ESLint (flat config) enforces explicit return types and a consistent code style.
+> A project `.gitignore` keeps the repo clean (`dist/`, `node_modules/`, logs, `.env`). Both are included in the repo.
 
 ---
 
 ## 🗂️ Folder Structure
 
 ```
-
 rimfrost-api-express-ts/
 ├─ src/
 │  ├─ app.ts
 │  ├─ config/
-│  │  ├─ env.ts
-│  │  └─ appConfig.ts
-│  ├─ db/
-│  │  └─ prismaClient.ts
-│  ├─ data/                  # DAO/Repository – only DB calls (Prisma)
+│  │  ├─ appConfig.ts
+│  │  └─ env.ts
+│  ├─ data/
+│  │  ├─ collaborators.data.ts
 │  │  ├─ persons.data.ts
 │  │  ├─ records.data.ts
-│  │  ├─ songs.data.ts
-│  │  ├─ formats.data.ts
-│  │  └─ roles.data.ts
-│  ├─ services/              # Domain logic + DTO mapping
-│  │  ├─ persons.service.ts
-│  │  ├─ records.service.ts
-│  │  ├─ songs.service.ts
-│  │  ├─ formats.service.ts
-│  │  └─ roles.service.ts
-│  ├─ routes/                # HTTP/API – validate, call service, return JSON
-│  │  ├─ persons.routes.ts
-│  │  ├─ records.routes.ts
-│  │  ├─ songs.routes.ts
-│  │  ├─ formats.routes.ts
-│  │  ├─ roles.routes.ts
-│  │  └─ meta.routes.ts      # cross-entity metadata/aggregations
+│  │  └─ songs.data.ts
+│  ├─ db/
+│  │  ├─ prismaClient.ts
+│  │  └─ sql/
+│  │     └─ migrations/
+│  ├─ errors/
+│  │  ├─ DomainError.ts
+│  │  ├─ NotFoundErrors.ts
+│  │  └─ RequestErrors.ts
 │  ├─ middleware/
 │  │  ├─ errorHandler.ts
-│  │  └─ notFound.ts
+│  │  └─ idParam.ts
+│  ├─ routes/
+│  │  ├─ common.ts
+│  │  ├─ persons.routes.ts
+│  │  ├─ records.routes.ts
+│  │  └─ songs.routes.ts
+│  ├─ services/
+│  │  ├─ meta/
+│  │  │  ├─ attachRecordCollaborators.ts
+│  │  │  ├─ augmentRecordCollaborators.ts
+│  │  │  ├─ buildPersonMeta.ts
+│  │  │  └─ index.ts
+│  │  ├─ persons.service.ts
+│  │  ├─ records.service.ts
+│  │  └─ songs.service.ts
 │  ├─ types/
+│  │  ├─ express.d.ts
 │  │  ├─ person.types.ts
 │  │  ├─ record.types.ts
-│  │  ├─ song.types.ts
-│  │  ├─ format.types.ts
-│  │  └─ role.types.ts
-│  └─ public/
-│     └─ index.html
+│  │  ├─ role.types.ts
+│  │  └─ song.types.ts
+│  └─ utils/
+│     ├─ asyncHandler.ts
+│     ├─ calcMainRoles.ts
+│     ├─ calcRoleCount.ts
+│     ├─ calcYearsActive.ts
+│     ├─ HttpError.ts
+│     ├─ isNonEmptyString.ts
+│     ├─ makeGetByForeignId.ts
+│     └─ makeGetById.ts
 └─ prisma/
-├─ schema.prisma
-├─ migrations/
-└─ seed.ts  (optional)
-
+   ├─ schema.prisma
+   ├─ migrations/
+   └─ (optional) seed.ts
 ```
 
-**Why layer-first?**  
-It isolates responsibilities (data → service → routes), makes testing easier, and lets you evolve DTOs/validation without leaking DB details into the HTTP layer.
+> Even though `records.*` and `songs.*` exist in the project, the current API is focused on `persons`, with optional expansions using the `with` parameter.
+
+---
+
+## 🧪 API – Persons
+
+### Base
+
+- `GET /api/persons` — list all persons
+
+### Detail with `with` parameter
+
+- `GET /api/persons/:id` — fetch a single person (base data)
+- `GET /api/persons/:id?with=records` — person including `records`
+- `GET /api/persons/:id?with=records,recordroles` — person with `records` and `recordroles`
+- `GET /api/persons/:id?with=records,recordroles,meta` — same as above, plus aggregated metadata (`recordCount`, `roleCount`, `years_active`, `mainRoles`, `mainRolesCount`)
+
+> Examples:
+>
+> - `/api/persons/18?with=records`
+> - `/api/persons/18?with=records,recordroles`
+> - `/api/persons/18?with=records,recordroles,meta`
+
+---
+
+## ❓ Why layer-first?
+
+It isolates responsibilities (data → service → routes), makes testing easier, and lets you evolve DTOs/validation without leaking database details into the HTTP layer.
 
 ---
 
@@ -94,10 +121,13 @@ It isolates responsibilities (data → service → routes), makes testing easier
 
 - Node.js ≥ 18 LTS
 - MySQL 8 (or compatible server)
-  - Ensure the MySQL `bin` folder is added to your system `PATH`
-    - Windows example: `C:\Program Files\MySQL\MySQL Server 8.0\bin`
-    - macOS/Linux example (Homebrew): `/usr/local/mysql/bin`
-- Prisma CLI (installed via dev deps)
+
+  - Make sure the MySQL `bin` folder is added to your system `PATH`
+
+    - **Windows:** `C:\Program Files\MySQL\MySQL Server 8.0\bin`
+    - **macOS/Linux (Homebrew):** `/usr/local/mysql/bin`
+
+- Prisma CLI (installed via dev dependencies)
 
 ---
 
@@ -111,26 +141,17 @@ npm install
 
 ### 2) Environment Variables
 
-Copy the template and fill your values:
-
 ```bash
 # Windows PowerShell
 Copy-Item .env.example .env
+
 # macOS/Linux
 cp .env.example .env
 ```
 
-`.env.example`:
+Then fill in your values in `.env`.
 
-```bash
-# App
-PORT=3000
-NODE_ENV=development
-
-# Prisma / MySQL
-# Format: mysql://USER:PASSWORD@HOST:PORT/DATABASE
-DATABASE_URL=mysql://root:password@localhost:3306/rimfrostdb
-```
+---
 
 ### 3) Database
 
@@ -153,86 +174,23 @@ npm run prisma:migrate    # Apply migrations
 npm run prisma:studio     # (optional) Open Prisma Studio
 ```
 
+---
+
 ### 4) Run in development
 
 ```bash
 npm run dev
 ```
 
-This runs TypeScript watch and nodemon in parallel.
-Server starts at `http://localhost:3000` (unless `PORT` is set).
-
----
-
-## 🧪 API (examples)
-
-> Replace with your final routes. These examples align with the entities and course requirements (all data, subsets, and cross-entity metadata).
-
-### Persons
-
-- `GET /api/persons` — list all persons
-- `GET /api/persons/:id` — get one person
-- `GET /api/persons?role=vocal` — filter by role (subset)
-- `POST /api/persons` — create
-- `PATCH /api/persons/:id` — update
-- `DELETE /api/persons/:id` — delete
-
-### Records
-
-- `GET /api/records` — list records (optionally include format)
-- `GET /api/records/:id` — record details (+ songs)
-- `GET /api/records?format=vinyl` — subset by format
-
-### Songs
-
-- `GET /api/songs` — list songs
-- `GET /api/songs/:id` — song details
-
-### Formats / Roles
-
-- `GET /api/formats` — list formats
-- `GET /api/roles` — list roles
-
-### Metadata (cross-entity)
-
-- `GET /api/meta/stats` — aggregated stats across entities (e.g., counts, groupBy format, avg songs/record, first/latest release)
-
----
-
-## ⚙️ Configuration
-
-- `src/config/env.ts` loads `.env` and exposes parsed values (e.g., `PORT` as a number).
-- `src/config/appConfig.ts` derives runtime flags (e.g., `isDev`, CORS allowlist).
-
----
-
-## 🛡️ Error Handling & 404
-
-- `src/middleware/notFound.ts` — returns 404 for unknown routes
-- `src/middleware/errorHandler.ts` — consistent JSON error shape, maps domain errors to HTTP
-
-**Example error shape**
-
-```json
-{ "error": "BadRequest", "message": "Invalid query parameter 'format'" }
-```
-
----
-
-## 🧹 Graceful Shutdown
-
-On `SIGINT`/`SIGTERM`:
-
-1. Stop accepting new HTTP requests
-2. `await prisma.$disconnect()`
-3. Exit with code `0`
+Runs TypeScript watch and nodemon in parallel.
+The server starts at [http://localhost:3000](http://localhost:3000) (unless `PORT` is set).
 
 ---
 
 ## 🧰 Notes on Tooling
 
-- **ESLint (flat config):** Included to keep style consistent and enforce explicit function return types (type-aware lint for TS).
-- **.gitignore:** Included to keep the repo clean (`dist/`, `node_modules/`, logs, `.env`), while committing `.env.example` for onboarding.
+- **ESLint (flat config):** Keeps the code style consistent and enforces explicit return types (type-aware linting for TS).
+- **.gitignore:** Keeps the repo clean (`dist/`, `node_modules/`, logs, `.env`), while committing `.env.example` for onboarding.
 
 ---
 

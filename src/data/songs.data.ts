@@ -1,4 +1,4 @@
-import prisma from "../db/prismaClient.js";
+/* import prisma from "../db/prismaClient.js";
 import type { Song } from "../types/song.types.js";
 
 // Pure data access - bara SQL queries
@@ -11,3 +11,4 @@ export const findById = async (id: number): Promise<Song | null> => {
     where: { id },
   });
 };
+ */

@@ -1,16 +1,4 @@
-/* import type { RowDataPacket } from "mysql2";*/
-
 import type { RecordDTO } from "./record.types.js";
-/* Rådata från databasen (SELECT) 
-export type PersonRow = RowDataPacket & {
-  id: number;
-  first_name: string;
-  alias: string | null;
-  last_name: string;
-  ipi_number: string | null;
-  created_at: string;
-  updated_at: string;
-}; */
 
 /** Payload vid skapande (POST) */
 export type NewPerson = {

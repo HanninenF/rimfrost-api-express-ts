@@ -1,4 +1,4 @@
-import prisma from "../db/prismaClient.js";
+/* import prisma from "../db/prismaClient.js";
 import type { RecordModel as RecordModel } from "../types/record.types.js";
 
 // Pure data access - prisma
@@ -25,3 +25,4 @@ export const findByPersonId = async (
     orderBy: { id: "asc" },
   });
 };
+ */
