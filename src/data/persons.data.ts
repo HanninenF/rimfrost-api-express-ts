@@ -2,7 +2,7 @@
 import prisma from "../db/prismaClient.js";
 import type { Prisma } from "@prisma/client";
 
-// Rå Prisma-typer (din egen domän-typ funkar också)
+// Rå Prisma-typer (egen domän-typ funkar också)
 export type PersonRaw = Prisma.personGetPayload<true>;
 export type PersonWithCreditsRaw = Prisma.personGetPayload<{
   include: { release_credit: { include: { record: true } } };
