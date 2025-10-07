@@ -1,7 +1,7 @@
-// src/config/env.ts
 import * as dotenv from "dotenv";
 dotenv.config();
 
+//plocka ut miljövariabler från process.env och samla i ett objekt för smidigare åtkomst i appen
 export const env = {
   NODE_ENV: process.env.NODE_ENV ?? "development",
   PORT: Number(process.env.PORT ?? 3000),

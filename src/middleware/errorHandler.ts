@@ -3,7 +3,7 @@ import type { ErrorRequestHandler } from "express";
 import { HttpError } from "../utils/HttpError.js";
 
 // Vilka koder får INTE skicka details till klienten:
-const HIDE_DETAILS_FOR = new Set(["INVALID_ID"]);
+const HIDE_DETAILS_FOR = new Set(["INVALID_ID", "INVALID_WITH"]);
 
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
   const route = `${req.method} ${req.originalUrl}`;
@@ -23,7 +23,11 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
     };
 
     // Lägg bara till details om koden inte är i “no-details”-listan och details finns
-    if (!HIDE_DETAILS_FOR.has(err.code) && err.details) {
+    const code = String(err.code ?? "")
+      .trim()
+      .toUpperCase();
+    if (!HIDE_DETAILS_FOR.has(code) && err.details) body.details = err.details;
+    {
       body.details = err.details;
     }
 

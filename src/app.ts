@@ -1,14 +1,15 @@
 import personRouter from "./routes/persons.routes.js";
-import { errorHandler, express, idParam } from "./routes/common.js";
 import prisma from "./db/prismaClient.js";
 import cors from "cors";
+import { errorHandler, express } from "./routes/common.js";
 
 const app = express();
-const PORT: number = Number(process.env.PORT) || 3000;
+const api = express.Router();
+const PORT: number = Number(process.env.PORT) || 4200;
 
 app.use(cors({ origin: "http://localhost:4200" }));
-app.param("id", idParam);
-app.use("/api/persons", personRouter);
+api.use("/persons", personRouter);
+app.use("/api", api);
 app.use(errorHandler);
 
 const server = app.listen(PORT, () => {

@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { HttpError } from "../utils/HttpError.js";
 
 //Validera och parsa :id en gång
+console.log("[idParam LOADED]");
 export default function idParam(
   req: Request,
   res: Response,
